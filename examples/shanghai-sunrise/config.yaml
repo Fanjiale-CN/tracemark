@@ -1,0 +1,11 @@
+track: zh
+template: zh-square-name
+text: 海上观日
+seed: 7
+photo: examples/shanghai-sunrise/input.jpg
+caption: 晨光落在黄浦江上
+date: "2026.08.15"
+place: 上海 · SHANGHAI
+style:
+  vermilion: "#C8392B"
+  mode: zhu
