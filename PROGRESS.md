@@ -44,3 +44,17 @@ research/{chinese,japanese,western}_seal_culture.md
 - 仓库：Fanjiale-CN/tracemark（public），本地 /home/ubuntu/tracemark，main 分支
 - 粤语文案要点：口语书面混合（"係""俾""嘅""喺""呢個"），与繁中区分开
 - 法语版 AUP 标题：Politique d'utilisation acceptable
+
+
+# 修复任务（2026-08-15）
+
+## 问题 1（已修复）：Manus 从 GitHub 导入报错 "SKILL.md must have valid YAML front matter with name field"
+根因：description 未加引号且含中文冒号"触发："，YAML 解析失败（mapping values not allowed here, column 238）。
+修复：description 改为 quoted scalar，并将"Trigger when the user wants to:"改为"Trigger when the user wants to"（去掉冒号）。python yaml.safe_load 验证通过。
+
+## 问题 2（进行中）：用户嫌 README 单一语言塞太长 + 实例展示单一
+决定：README 重写为单页面精简版（英文为主，三张成品图展示：shanghai-sunrise 中式 / kyoto-lantern 日式 / wax-monogram 西式），六语言独立文件链接放 docs/（zh-hans.md / zh-hant.md / yue.md / en.md / ja.md / fr.md 已存在）。
+
+## 待办
+- git add -A && commit "fix: quoted YAML frontmatter + single-page README with gallery; 6 languages → docs/" && git push origin main
+- 告知用户重新在 Manus 用 GitHub 链接导入
