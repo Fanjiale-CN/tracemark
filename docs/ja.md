@@ -15,9 +15,9 @@ Trace every mark.
 
 ## 使用フロー
 
-1. `python3 scripts/validate_input.py "<入力文字>" "<軌道>"` → 通過したら続行
-2. 入力写真の準備（V1 は写真を直接利用可能）
-3. `python3 scripts/render.py --config examples/<case>/config.yaml` → 1200×1600 PNG を出力
+1. `config.yaml` を書く（schema は en.md 参照）。AUP ゲートはレンダリングパイプライン内で自動的に強制実行され、スキップ不可——単独の検証コマンドは不要
+2. 入力写真を用意し、ケースディレクトリに置いて config に相対パスを指定（`photo: input.jpg`）
+3. `python3 scripts/tracemark.py render --config examples/<case>/config.yaml` — AUP校驗/パス解決/EXIF/欠字チェックはパイプライン内で強制実行、スキップ不可；`--no-photo` で印章のみ出力
 4. 視覚品質ゲート：文字を一字ずつ照合（文字化けゼロ）、永続マイクロテキスト "TRACE・ART" が在位、穴あき縁/アート枠が在位
 5. 新しいケースは `examples/<case>/input.jpg + prompt.txt + config.yaml + output.jpg` のペアで保存（examples ディレクトリがそのまま評価セットになります）
 

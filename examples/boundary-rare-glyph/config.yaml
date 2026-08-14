@@ -1,0 +1,12 @@
+# Boundary case: characters absent from the bundled zhuan font (壹山碑, 3843 glyphs).
+# Expected: FAIL with "missing glyph" — never a tofu output.
+_expect: fail
+track: zh
+text: 海上观日龘
+seed: 5
+photo: null
+caption: 生僻字检测测试
+date: "2026.08.15"
+place: 测试
+style:
+  vermilion: "#C8392B"

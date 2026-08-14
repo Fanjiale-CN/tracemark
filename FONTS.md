@@ -14,8 +14,10 @@ Attribution in redistributed works: 峄山碑篆体 by 字传, via maoken.com.
 
 ## noto-serif-jp.ttf — Noto Serif JP
 
-Google / Adobe. Licensed under **SIL Open Font License 1.1**. See `fonts/NOTO_LICENSE` (or https://opensource.org/licenses/OFL-1.1).
+Google / Adobe. Licensed under **SIL Open Font License 1.1**. License text: `fonts/OFL-1.1.txt` (also at https://opensource.org/licenses/OFL-1.1).
 
 ## playfair-display.ttf — Playfair Display
 
-by Claus Eggers Sørensen. Licensed under **SIL Open Font License 1.1**.
+by Claus Eggers Sørensen. Licensed under **SIL Open Font License 1.1**. License text: `fonts/OFL-1.1.txt`.
+
+See `fonts/YISHANBEI_LICENSE.txt` for the full redistribution terms of 峄山碑篆体.

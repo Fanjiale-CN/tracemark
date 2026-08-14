@@ -1,6 +1,6 @@
 ---
 name: tracemark
-description: Generate artistic commemorative seal/postcard imagery from a photo and a one-line theme, in three cultural tracks (Chinese zhuan seal 中式篆刻, Japanese craft stamp 日本のはがき印, Western wax seal 西式火漆). Trigger when the user wants to add a decorative seal or stamp to a photo or postcard 给照片盖章; turn a photo into a postcard with an artistic seal; generate a seal-style graphic for a journal, gift, or social post; create monogram or wax-seal-style ornament 制作装饰性印章或火漆印. Do NOT use for real/official seals 真实公章, authentication stamps 认证印章, documents needing legal validity, or copying existing trademarks. Always run scripts/validate_input.py before rendering. Read AUP.md first. Follow research/*.md for cultural design rules.
+description: Generate artistic commemorative seal/postcard imagery from a photo and a one-line theme, in three cultural tracks (Chinese zhuan seal 中式篆刻, Japanese craft stamp 日本のはがき印, Western wax seal 西式火漆). Trigger when the user wants to add a decorative seal or stamp to a photo or postcard 给照片盖章; turn a photo into a postcard with an artistic seal; generate a seal-style graphic for a journal, gift, or social post; create monogram or wax-seal-style ornament 制作装饰性印章或火漆印. Do NOT use for real/official seals 真实公章, authentication stamps 认证印章, documents needing legal validity, or copying existing trademarks. Always render through the unified entry scripts/tracemark.py (AUP gate is enforced inside the pipeline). Read AUP.md first. Follow research/*.md for cultural design rules.
 ---
 
 # TraceMark 痕迹追溯
@@ -15,19 +15,22 @@ Trace every mark. 痕迹追溯。
 
 | 轨道 | 触发 | 模板 |
 | --- | --- | --- |
-| zh（中式篆刻） | 中文名/斋馆/吉语/城市纪念 | render.py 内置（朱文方印/白文方印/圆闲章） |
-| jp（日式 craft） | 片假名/日式文具感/駅スタンプ风 | render.py 内置（圆形墨晕戳） |
-| wz（西式火漆） | monogram/婚礼/礼品/品牌信封 | render.py 内置（蜡封圆印） |
+| zh（中式篆刻） | 中文名/斋馆/吉语/城市纪念 | 模板：zh-square-zhu 朱文方印 / zh-square-bai 白文方印 / zh-circle-leisure 圆闲章 |
+| jp（日式 craft） | 片假名/日式文具感/駅スタンプ风 | 模板：jp-circle-stamp 圆形墨晕戳 |
+| wz（西式火漆） | monogram/婚礼/礼品/品牌信封 | 模板：wz-wax-monogram 蜡封圆印 |
 
-**类别可用性**：印章轨道禁公司/机构/政府名（validate_input.py 拒绝并引导切邮票样式）；邮票与明信片样式允许机构名。见 AUP.md。
+模板由 config.yaml 的 `template:` 字段路由（可选，缺省走轨道默认模板）。
+
+**类别可用性**：印章轨道禁公司/机构/政府名（渲染管线自动拒绝并温和引导切邮票样式）；邮票与明信片样式允许机构名。见 AUP.md。
 
 ## 使用流程
 
-1. `python3 scripts/validate_input.py "<输入文字>" "<轨道>"` → 通过后继续
-2. 准备输入照片（用户照片或 agent 描述构图由 V1.1 的提炼规范处理；V1 支持直接照片）
-3. `python3 scripts/render.py --config examples/<case>/config.yaml` → 输出 1200×1600 PNG
-4. 目检质量门：逐字比对文字零翻车、永久微字 "TRACE·ART" 在位、齿孔/艺术边框在位
-5. 新用例按 `examples/<case>/input.jpg + prompt.txt + config.yaml + output.jpg` 配对存入（examples 即评测集）
+1. 撰写 `config.yaml` 放入用例目录；照片放同目录，`photo: input.jpg`（相对 config 目录解析，永不用 cwd）
+2. `python3 scripts/tracemark.py render --config <用例目录>/config.yaml` → 输出 1200×1600 JPEG (q88)；`--no-photo` 生成纯印章成品（齿孔+TRACE·ART 强制在位）
+3. 单跑风控：`python3 scripts/tracemark.py validate "<文字>" "zh"`（track zh|jp|wz 或 mode seal|stamp|postcard 均可，自动推导）；风控被拒会温和引导而非报错
+4. 成品合规扫描：`python3 scripts/tracemark.py audit <output.jpg>`（齿孔+TRACE·ART+画幅指纹）
+5. 边界用例在 config 中写 `_expect: fail`（缺字）或 `_expect: reject`（风控）供 run_examples.py 断言；新用例按 `input.jpg + prompt.txt + config.yaml + output.jpg` 配对存入（examples 即评测集）
+6. 依赖：`pip install -r requirements.txt`（Pillow>=10 / PyYAML / numpy / freetype-py；缺字检测读字体真实 cmap——豆腐块一律 FAIL，渲染管线全程无法跳过风控）
 
 ## 关键约束（违反即返工）
 

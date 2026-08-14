@@ -1,0 +1,26 @@
+# 峄山碑篆体 (Yi Shan Bei Seal Script) — Redistribution Terms
+## yishanbeizhuanti.ttf
+
+Font: 峄山碑篆体, designed by 字传 (Zi Chuan).
+Original distribution: 猫啃网 Maoken (https://www.maoken.com/freefonts/21952.html).
+
+This font does not carry a standard OSI license (not SIL OFL). The author's
+public statement (as archived on maoken.com and mirrored on open source font
+mirrors such as GitHub 字体仓库) grants the following terms, which we comply
+with in this repository:
+
+1. Free embedding and use, commercial and non-commercial: ALLOWED.
+2. Redistribution of the font file through non-directly-profit channels
+   (open-source repositories, bundled distributions): ALLOWED, provided:
+   - the copyright notice remains intact;
+   - a copy of these license terms accompanies the font (this file);
+   - attribution is given when redistributing.
+3. Redesigning the glyphs to create a derivative font: unclarified by the
+   author — NOT ATTEMPTED in this project (TraceMark does not modify the
+   font file).
+
+Attribution string: 峄山碑篆体 by 字传, distributed via 猫啃网 maoken.com.
+
+NOTE: this is a summary of the author's published terms, not a replacement
+legal document. For the authoritative original statement see the maoken.com
+listing (linked above). TraceMark ships the font file unchanged.

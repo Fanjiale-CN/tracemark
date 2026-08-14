@@ -15,11 +15,28 @@ Trace every mark.
 
 ## Workflow
 
-1. `python3 scripts/validate_input.py "<input text>" "<track>"` → continue once it passes
-2. Prepare the input photo (V1 takes photos directly)
-3. `python3 scripts/render.py --config examples/<case>/config.yaml` → outputs a 1200×1600 PNG
-4. Visual quality gate: verify text character-by-character (zero gibberish), permanent microtext "TRACE·ART" present, perforation/artistic border present
-5. Store new cases as paired `examples/<case>/input.jpg + prompt.txt + config.yaml + output.jpg` (the examples directory IS the eval set)
+1. Prepare the input photo and write `config.yaml` (schema below). AUP validation, photo-path resolution (relative to the config file, never the cwd), EXIF correction, and the real missing-glyph check are all enforced automatically by the pipeline — no step can be skipped.
+2. `python3 scripts/tracemark.py render --config examples/<case>/config.yaml` → outputs a 1200×1600 JPEG (q88); add `--no-photo` for the seal-only deliverable
+3. AUP check can also run standalone: `python3 scripts/tracemark.py validate "<text>" "zh"` (track `zh|jp|wz` or mode `seal|stamp|postcard`, auto-derived)
+4. Visual quality gate: character-by-character verification (zero tofu — glyphs are checked against the font's actual cmap via freetype-py, glyph index 0 = .notdef), permanent microtext "TRACE·ART" present, perforation/artistic border present (baked into every output, seal-only included)
+5. Store new cases as paired `examples/<case>/input.jpg + prompt.txt + config.yaml + output.jpg` (the examples directory IS the eval set); boundary cases use `_expect: fail` or `_expect: reject` in their config
+
+### config.yaml schema
+
+```yaml
+track: zh | jp | wz          # zh/wz -> seal mode, jp -> stamp mode (auto-derived)
+template: zh-square-zhu | zh-square-bai | zh-circle-leisure |
+          jp-circle-stamp | wz-wax-monogram | null   # optional; track fallback otherwise
+text: "<seal text>"          # >8 chars is truncated with a warning; tofu chars fail the build
+seed: 7                      # explicit seed -> pixel-stable outputs
+photo: input.jpg             # relative to config.yaml dir (never cwd); null = seal-only
+caption: "<one-line caption>"
+date: "2026.08.15"
+place: "<place name>"
+style:
+  vermilion: "#C8392B"
+  mode: zhu | bai (zh) | red | black (jp) | crimson | wine | gold (wz)
+```
 
 ## Hard constraints (violations → rework)
 

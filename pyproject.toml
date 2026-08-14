@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tracemark"
+version = "1.1.0"
+description = "TraceMark (痕迹追溯): cultural seal / craft stamp / wax seal synthesis engine. Three-track local compositing with AUP gating and anti-forgery artification."
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Fanjiale (Galok)" }]
+keywords = ["seal", "stamps", "wax seal", "chinese calligraphy", "generative art", "agent-skill"]
+dependencies = [
+    "Pillow>=10.0,<12",
+    "PyYAML>=6.0",
+    "numpy>=1.24",
+    "freetype-py>=2.3",
+]
+
+[project.optional-dependencies]
+dev = ["fonttools>=4.40"]
+
+[tool.setuptools.packages.find]
+include = ["scripts*"]

@@ -15,9 +15,9 @@ Trace every mark. 痕跡追溯。
 
 ## 使用流程
 
-1. `python3 scripts/validate_input.py "<輸入文字>" "<軌道>"` → 通過後繼續
-2. 準備輸入照片（V1 支持直接照片）
-3. `python3 scripts/render.py --config examples/<case>/config.yaml` → 輸出 1200×1600 PNG
+1. 撰寫 `config.yaml`（schema 見 en.md）。AUP 風控校驗由渲染管線自動強制執行——無法跳過，無需單獨運行校驗器
+2. 準備輸入照片，放在用例目錄下並在 config 中寫相對路徑（`photo: input.jpg`）
+3. `python3 scripts/tracemark.py render --config examples/<case>/config.yaml` — AUP 校验/路径解析/EXIF/缺字检测在管线中强制执行，无法跳过；`--no-photo` 生成纯印章成品
 4. 目檢質量門：逐字比對文字零翻車、永久微字 "TRACE·ART" 在位、齒孔/藝術邊框在位
 5. 新用例按 `examples/<case>/input.jpg + prompt.txt + config.yaml + output.jpg` 配對存入（examples 即評測集）
 

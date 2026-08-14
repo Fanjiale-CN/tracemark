@@ -1,0 +1,7 @@
+# TraceMark pinned runtime dependencies (lockfile).
+# Regenerate with: pip freeze | grep -Ei "pillow|pyyaml|numpy|freetype" > requirements.txt
+Pillow==10.4.0
+PyYAML==6.0.2
+numpy==1.26.4
+freetype-py==2.5.1
+fonttools==4.53.1

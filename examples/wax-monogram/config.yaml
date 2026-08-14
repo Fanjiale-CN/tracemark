@@ -2,7 +2,7 @@ track: wz
 template: wz-wax-monogram
 text: M
 seed: 5
-photo: null
+photo: input.jpg
 caption: sealed with a quiet heart
 date: "2026.08.15"
 place: LISBON

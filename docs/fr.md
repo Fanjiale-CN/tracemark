@@ -15,9 +15,9 @@ Trace every mark.
 
 ## Flux de travail
 
-1. `python3 scripts/validate_input.py "<texte d'entrée>" "<mode>"` → continuer une fois le test passé
-2. Préparer la photo d'entrée (V1 accepte directement une photo)
-3. `python3 scripts/render.py --config examples/<case>/config.yaml` → produit un PNG 1200×1600
+1. Rédiger `config.yaml` (schéma dans en.md). Le contrôle AUP est appliqué automatiquement par le pipeline de rendu — impossible à contourner, aucune commande de validation séparée n'est nécessaire
+2. Préparer la photo d'entrée, la placer dans le dossier du cas et y faire référence en chemin relatif (`photo: input.jpg`)
+3. `python3 scripts/tracemark.py render --config examples/<case>/config.yaml` — la validation AUP, la résolution du chemin photo, la correction EXIF et la détection des glyphes manquants sont forcées dans le pipeline (impossible à contourner) ; `--no-photo` pour le rendu sceau seul
 4. Contrôle qualité visuel : vérifier le texte caractère par caractère (zéro aberration), microtexte permanent "TRACE·ART" présent, bordure dentelée/cadre artistique présent
 5. Stocker les nouveaux cas en paires `examples/<case>/input.jpg + prompt.txt + config.yaml + output.jpg` (le répertoire examples EST l'ensemble d'évaluation)
 
