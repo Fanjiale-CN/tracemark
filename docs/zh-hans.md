@@ -1,15 +1,7 @@
----
-name: tracemark
-description: Generate artistic commemorative seal/postcard imagery from a photo and a one-line theme, in three cultural tracks (Chinese zhuan seal 中式篆刻, Japanese craft stamp 日本のはがき印, Western wax seal 西式火漆). Trigger when the user wants to: add a decorative seal or stamp to a photo or postcard 给照片盖章; turn a photo into a postcard with an artistic seal; generate a seal-style graphic for a journal, gift, or social post; create monogram or wax-seal-style ornament 制作装饰性印章或火漆印. Do NOT use for: real/official seals 真实公章, authentication stamps 认证印章, documents needing legal validity, copying existing trademarks. Always run scripts/validate_input.py before rendering. Read AUP.md (六语：简中/繁中/粤语/EN/JP/FR) first. Follow research/*.md for cultural design rules.
----
-
-# TraceMark 痕迹追溯
+# TraceMark 痕迹追溯（简体中文）
 
 Artistic decorative seal/postcard synthesis from photo + one-line theme.
 Trace every mark. 痕迹追溯。
-
-> Languages / 語言切換：[简体中文](docs/zh-hans.md) · [繁體中文](docs/zh-hant.md) · [粵語](docs/yue.md) · [English](docs/en.md) · [日本語](docs/ja.md) · [Français](docs/fr.md)
-> 六语完整版文档存于 `docs/` 目录；AUP.md 六语版见 AUP.md。
 
 ## 路由表（先读 AUP.md，再查可用性）
 
@@ -24,7 +16,7 @@ Trace every mark. 痕迹追溯。
 ## 使用流程
 
 1. `python3 scripts/validate_input.py "<输入文字>" "<轨道>"` → 通过后继续
-2. 准备输入照片（用户照片或 agent 描述构图由 V1.1 的提炼规范处理；V1 支持直接照片）
+2. 准备输入照片（V1 支持直接照片）
 3. `python3 scripts/render.py --config examples/<case>/config.yaml` → 输出 1200×1600 PNG
 4. 目检质量门：逐字比对文字零翻车、永久微字 "TRACE·ART" 在位、齿孔/艺术边框在位
 5. 新用例按 `examples/<case>/input.jpg + prompt.txt + config.yaml + output.png` 配对存入（examples 即评测集）

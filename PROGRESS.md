@@ -27,3 +27,20 @@ research/{chinese,japanese,western}_seal_culture.md
 
 ## 目检结论
 三轨道全部合格（analysis 记录在沙盒 /home/ubuntu/tracemark 外部备份）
+
+
+# 多语言文档任务（2026-08-15，进行中）
+
+用户要求：SKILL 说明增加六语言版本——简体中文、繁體中文、粵語、English、日本語、Français，让人们在底部选择语言，做完推送 main。
+
+## 架构决定
+- README.md：重写为单一入口 + 顶部语言切换锚点表 + 六个语言区块（已完成）
+- AUP.md：重写为六语言区块 + 顶部切换（已完成）
+- SKILL.md：description 增加中英日触发词混合；加语言切换导航块（已完成）
+- docs/ 目录存放六语完整版：zh-hans.md ✅、zh-hant.md ✅，待写：yue.md / en.md / ja.md / fr.md
+- 完成后 git add -A && commit "docs: six-language README/AUP/SKILL" && git push origin main
+
+## 关键事实
+- 仓库：Fanjiale-CN/tracemark（public），本地 /home/ubuntu/tracemark，main 分支
+- 粤语文案要点：口语书面混合（"係""俾""嘅""喺""呢個"），与繁中区分开
+- 法语版 AUP 标题：Politique d'utilisation acceptable
