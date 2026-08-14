@@ -1,6 +1,6 @@
 ---
 name: tracemark
-description: "Generate artistic commemorative seal/postcard imagery from a photo and a one-line theme, in three cultural tracks (Chinese zhuan seal 中式篆刻, Japanese craft stamp 日本のはがき印, Western wax seal 西式火漆). Trigger when the user wants to add a decorative seal or stamp to a photo or postcard 给照片盖章; turn a photo into a postcard with an artistic seal; generate a seal-style graphic for a journal, gift, or social post; create monogram or wax-seal-style ornament 制作装饰性印章或火漆印. Do NOT use for real/official seals 真实公章, authentication stamps 认证印章, documents needing legal validity, or copying existing trademarks. Always run scripts/validate_input.py before rendering. Read AUP.md (six languages) first. Follow research/*.md for cultural design rules."
+description: Generate artistic commemorative seal/postcard imagery from a photo and a one-line theme, in three cultural tracks (Chinese zhuan seal 中式篆刻, Japanese craft stamp 日本のはがき印, Western wax seal 西式火漆). Trigger when the user wants to add a decorative seal or stamp to a photo or postcard 给照片盖章; turn a photo into a postcard with an artistic seal; generate a seal-style graphic for a journal, gift, or social post; create monogram or wax-seal-style ornament 制作装饰性印章或火漆印. Do NOT use for real/official seals 真实公章, authentication stamps 认证印章, documents needing legal validity, or copying existing trademarks. Always run scripts/validate_input.py before rendering. Read AUP.md first. Follow research/*.md for cultural design rules.
 ---
 
 # TraceMark 痕迹追溯
