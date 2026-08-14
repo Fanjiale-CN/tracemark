@@ -342,8 +342,11 @@ def main():
         out = render_seal_only(plate)
     else:
         out = render_postcard(cfg, plate)
-    out_path = args.out or os.path.splitext(args.config)[0] + ".png"
-    out.save(out_path)
+    out_path = args.out or os.path.splitext(args.config)[0] + ".jpg"
+    if out_path.lower().endswith((".jpg", ".jpeg")):
+        out.convert("RGB").save(out_path, quality=88, optimize=True)
+    else:
+        out.save(out_path)
     print(f"[tracemark] saved {out_path} ({out.width}x{out.height})")
 
 

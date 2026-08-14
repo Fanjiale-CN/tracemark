@@ -19,7 +19,7 @@ Trace every mark. 痕迹追溯。
 2. 准备输入照片（V1 支持直接照片）
 3. `python3 scripts/render.py --config examples/<case>/config.yaml` → 输出 1200×1600 PNG
 4. 目检质量门：逐字比对文字零翻车、永久微字 "TRACE·ART" 在位、齿孔/艺术边框在位
-5. 新用例按 `examples/<case>/input.jpg + prompt.txt + config.yaml + output.png` 配对存入（examples 即评测集）
+5. 新用例按 `examples/<case>/input.jpg + prompt.txt + config.yaml + output.jpg` 配对存入（examples 即评测集）
 
 ## 关键约束（违反即返工）
 

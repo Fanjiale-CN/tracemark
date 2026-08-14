@@ -19,7 +19,7 @@ Trace every mark.
 2. 入力写真の準備（V1 は写真を直接利用可能）
 3. `python3 scripts/render.py --config examples/<case>/config.yaml` → 1200×1600 PNG を出力
 4. 視覚品質ゲート：文字を一字ずつ照合（文字化けゼロ）、永続マイクロテキスト "TRACE・ART" が在位、穴あき縁/アート枠が在位
-5. 新しいケースは `examples/<case>/input.jpg + prompt.txt + config.yaml + output.png` のペアで保存（examples ディレクトリがそのまま評価セットになります）
+5. 新しいケースは `examples/<case>/input.jpg + prompt.txt + config.yaml + output.jpg` のペアで保存（examples ディレクトリがそのまま評価セットになります）
 
 ## 絶対制約（違反はやり直し）
 

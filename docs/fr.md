@@ -19,7 +19,7 @@ Trace every mark.
 2. Préparer la photo d'entrée (V1 accepte directement une photo)
 3. `python3 scripts/render.py --config examples/<case>/config.yaml` → produit un PNG 1200×1600
 4. Contrôle qualité visuel : vérifier le texte caractère par caractère (zéro aberration), microtexte permanent "TRACE·ART" présent, bordure dentelée/cadre artistique présent
-5. Stocker les nouveaux cas en paires `examples/<case>/input.jpg + prompt.txt + config.yaml + output.png` (le répertoire examples EST l'ensemble d'évaluation)
+5. Stocker les nouveaux cas en paires `examples/<case>/input.jpg + prompt.txt + config.yaml + output.jpg` (le répertoire examples EST l'ensemble d'évaluation)
 
 ## Contraintes strictes (violation → reprise)
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run all example cases and output to examples/<case>/output.png."""
+"""Run all example cases and output to examples/<case>/output.jpg."""
 import glob
 import os
 import subprocess
@@ -15,7 +15,7 @@ if not cases:
 failed = 0
 for cfg in cases:
     case_dir = os.path.dirname(cfg)
-    out = os.path.join(case_dir, "output.png")
+    out = os.path.join(case_dir, "output.jpg")
     r = subprocess.run(["python3", os.path.join(ROOT, "scripts", "render.py"),
                         "--config", cfg, "--out", out], capture_output=True, text=True)
     if r.returncode != 0:

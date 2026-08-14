@@ -19,7 +19,7 @@ Trace every mark.
 2. Prepare the input photo (V1 takes photos directly)
 3. `python3 scripts/render.py --config examples/<case>/config.yaml` → outputs a 1200×1600 PNG
 4. Visual quality gate: verify text character-by-character (zero gibberish), permanent microtext "TRACE·ART" present, perforation/artistic border present
-5. Store new cases as paired `examples/<case>/input.jpg + prompt.txt + config.yaml + output.png` (the examples directory IS the eval set)
+5. Store new cases as paired `examples/<case>/input.jpg + prompt.txt + config.yaml + output.jpg` (the examples directory IS the eval set)
 
 ## Hard constraints (violations → rework)
 
