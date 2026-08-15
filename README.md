@@ -49,6 +49,10 @@ One YAML configures a case (`examples/shanghai-sunrise/config.yaml`): `text` is 
 | jp | Japanese eki-stamp craft stamp (circular sumi-ink) | travel memories / stationery | `examples/kyoto-lantern` |
 | wz | Western wax seal (embossed monogram) | envelopes / weddings / brands | `examples/wax-monogram` |
 
+## Brand philosophy — born from galok
+
+TraceMark (痕迹追溯) is born from the editorial philosophy of [galok.me](https://galok.me): personal growth as plant growth, fed by three ways of seeing — to view, to frame, to look closer (视 · 框 · 查). A TraceMark postcard is one of those traces: a faithful photograph, an archive number, a coordinate, a stamped moment. The visual grammar — near-black ink on warm paper (#1a1a1a / #f5f0e8), a single signal-red accent (#c8392b), micro-type `TRACE·ART`, perforated postcard edges — is the galok editorial system carried into code.
+
 ## Why it looks like this (design stance)
 
 Outputs are **deliberately not real seals**: perforated edges, non-standard layout, a permanent micro-type `TRACE·ART`. That is both an art language and a legal moat — seal laws protect marks usable for authentication, and statute (e.g. the 1970 U.S. postal law's size-difference requirement for stamp reproductions) itself carves out the "artistic difference" safe zone. See AUP.md.

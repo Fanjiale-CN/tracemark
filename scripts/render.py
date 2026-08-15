@@ -50,7 +50,8 @@ CANVAS_W, CANVAS_H = 1200, 1600
 SEAL_CELL = 380
 PAPER = (245, 240, 232, 255)
 
-FONT_ZH = os.path.join(ROOT, "fonts", "yishanbeizhuanti.ttf")
+FONT_ZH = os.path.join(ROOT, "fonts", "chongxi_seal.otf")  # 崇羲篆體 — true xiaozhuan canon (CC BY-ND; keep as-is)
+FONT_ZH_FALLBACK = os.path.join(ROOT, "fonts", "yishanbeizhuanti.ttf")  # legacy fallback
 FONT_JP = os.path.join(ROOT, "fonts", "noto-serif-jp.ttf")
 FONT_WZ = os.path.join(ROOT, "fonts", "playfair-display.ttf")
 
@@ -124,6 +125,20 @@ def draw_glyph_centered(canvas, pos, ch, font, fill, cell_size: int):
     canvas.alpha_composite(glyph, pos)
 
 
+def resolve_zh_font(text: str):
+    """Primary zhuan typeface is the true xiaozhuan canon 崇羲篆體 (CC BY-ND).
+    Fall back to 峄山碑篆体 only if the text contains glyphs the canon lacks —
+    verify_text then fails loudly on anything neither font can render (v1.1)."""
+    for path in (FONT_ZH, FONT_ZH_FALLBACK):
+        missing = glyphs_missing(path, text)
+        if not missing:
+            return path
+    fail(f"zh-seal text {text!r} cannot be fully rendered by the bundled "
+         "xiaozhuan fonts (missing in both 崇羲篆體 and 峄山碑篆体). "
+         "Suggestions: use 1–4 Traditional Chinese characters from the 《說文解字》 canon "
+         "(e.g. 觀 not 观), shorten the text, or remove rare/decorative characters")
+
+
 def render_zh(cfg: dict):
     style = cfg.get("style", {})
     mode = style.get("mode", "zhu")
@@ -133,8 +148,9 @@ def render_zh(cfg: dict):
     color = tuple(int(hexc[i:i + 2], 16) for i in (1, 3, 5))
 
     font_size = SEAL_CELL // (2 if len(text) <= 2 else 3) - SEAL_CELL // 24
-    font = load_font(FONT_ZH, font_size)
-    verify_text(text, FONT_ZH, "zh-seal")
+    zh_font_path = resolve_zh_font(text)
+    font = load_font(zh_font_path, font_size)
+    verify_text(text, zh_font_path, "zh-seal")
 
     border = max(3, SEAL_CELL // 48)
     inner = SEAL_CELL - border * 2
@@ -185,8 +201,9 @@ def render_zh_circle_leisure(cfg: dict):
     color = tuple(int(hexc[i:i + 2], 16) for i in (1, 3, 5))
 
     font_size = SEAL_CELL // (3 if len(text) >= 3 else 2) - SEAL_CELL // 24
-    font = load_font(FONT_ZH, font_size)
-    verify_text(text, FONT_ZH, "zh-circle-leisure")
+    zh_font_path = resolve_zh_font(text)
+    font = load_font(zh_font_path, font_size)
+    verify_text(text, zh_font_path, "zh-circle-leisure")
 
     art = Image.new("RGBA", (SEAL_CELL, SEAL_CELL), (0, 0, 0, 0))
     d = ImageDraw.Draw(art)
@@ -391,9 +408,19 @@ def render_postcard(cfg: dict, plate: "Image.Image"):
         except Exception:
             pass
         photo = photo.convert("RGBA")
-        # fit photo into upper 62% with inner frame
-        pw, ph = int(CANVAS_W * 0.86), int(CANVAS_H * 0.58)
-        photo = ImageOps.fit(photo, (pw, ph), Image.LANCZOS)
+        # Frame the photo into the upper area WITHOUT mangling its edges:
+        # scale to full frame width first (keeps the left-edge watermark band
+        # and horizon intact), then centre-crop only excess HEIGHT. A blunt
+        # ImageOps.fit (both axes) is what silently chops watermark bands.
+        pw, ph = int(CANVAS_W * 0.92), int(CANVAS_H * 0.58)
+        scale = pw / photo.width
+        new_h = max(1, int(round(photo.height * scale)))
+        photo = photo.resize((pw, new_h), Image.LANCZOS)
+        if new_h > ph:
+            top = (new_h - ph) // 2
+            photo = photo.crop((0, top, pw, top + ph))
+        else:
+            ph = new_h
         canvas.alpha_composite(photo, ((CANVAS_W - pw) // 2, 40))
         # frame rule line
         d = ImageDraw.Draw(canvas)

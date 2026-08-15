@@ -1,11 +1,11 @@
 track: zh
 template: zh-square-zhu
-text: 海上观日
+text: 觀海上日
 seed: 7
 photo: input.jpg
 caption: 晨光落在黄浦江上
-date: "2026.08.15"
+date: 2026.08.15
 place: 上海 · SHANGHAI
 style:
-  vermilion: "#C8392B"
+  vermilion: '#C8392B'
   mode: zhu
