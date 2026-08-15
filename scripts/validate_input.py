@@ -1,86 +1,204 @@
 #!/usr/bin/env python3
-"""TraceMark input guard — category-availability routing (category-level, not keyword-hunting).
+"""TraceMark AUP gate — purpose-based, expression-permissive.
 
-Rules (per AUP.md):
-- seal mode: organization/company/government names are FORBIDDEN -> guide user to stamp/postcard mode
-- stamp / postcard modes: organization, company, government, country names are ALLOWED (memorial nature)
+Design (v1.0 audit): political expression, public figures, institution names,
+satire, historical subjects are ALL allowed. The gate only blocks
+certification/impersonation *purposes* and exact replicas of existing seals:
 
-Parameter conventions (both accepted):
-- mode: seal | stamp | postcard   (explicit output mode)
-- track: zh | jp | wz            (cultural track; mode is derived: zh/wz -> seal, jp -> stamp)
+    allowed purposes : art | editorial | satire | travel | gift | postcard
+    blocked purposes : authentication | official-document | exact-replica
 
-Usage:
-    python3 validate_input.py "<text>" "<mode>"          # mode in seal | stamp | postcard
-    python3 validate_input.py --track zh "<text>"        # track zh/jp/wz, mode auto-derived
-Exit: 0 = pass, 1 = rejected (prints gentle guidance, never a bare error)
+The gate inspects intent markers (keywords plus config-level purpose field),
+never the vocabulary of the text itself. General content safety is delegated
+to the host platform; TraceMark does not run a broad political censorship
+filter.
 """
 import re
 import sys
 
-# Forbidden markers — institution names that would touch authentication-grade
-# seal territory when rendered in the *seal* mode. Full-word markers come first
-# (precise, no false positives on personal names); single-character suffixes
-# are a second safety net and only trip when the character itself appears.
-FORBIDDEN_MARKERS = [
-    # Chinese institution full-word markers (government bodies)
-    "国务院", "人民政府", "省政府", "市政府", "县政府", "区政府", "镇政府",
-    "人大常委会", "人民法院", "检察院", "公安局", "监察委",
-    "税务总局", "海关总署", "市场监管", "卫健委", "气象局", "铁路局",
-    "委员会", "事务所", "研究院", "科学院", "博物馆", "纪念馆", "美术馆",
-    # Chinese institution suffixes (single-char net)
-    "公司", "有限", "集团", "股份", "局", "厅", "署", "政府",
-    # English
-    "corp", "inc", "ltd", "llc", "co.", "corporation", "company", "limited",
-    "government", "ministry", "agency", "bureau", "committee", "association",
-    "university", "college", "institute", "foundation", "state council",
-    # Japanese
-    "会社", "法人", "組合", "省", "庁", "都道府県", "役所",
+# ---------------------------------------------------------------------------
+# Purpose model
+# ---------------------------------------------------------------------------
+ALLOWED_PURPOSES = {"art", "editorial", "satire", "travel", "gift", "postcard"}
+BLOCKED_PURPOSES = {"authentication", "official-document", "exact-replica"}
+
+# Intent markers in user-supplied text / prompts that signal a blocked
+# purpose. These are purpose signals ("use this to certify a contract"), not
+# topic words ("国务院" is fine in an art/editorial/satire context).
+_BLOCK_INTENT_PATTERNS = [
+    r"用于.{0,6}认证|用于.{0,6}验证|认证用途|认证.{0,6}用途|刻制印章|刻章|authentication|authenticat",
+    r"公章|官方文件|公文|证件|票据|合同盖章|official document|official-document",
+    r"印章的效力|同等效力|效力等效|公章刻",
+    r"复刻真实印章|复刻现存印章|复刻官方印章|exact replica|replicate an existing (official )?seal",
+    r"冒充|仿冒|假冒官方|impersonate|forged|fraud",
+    r"法律效[力用]|具有法律效力|legal(ly )?valid|legal validity",
+    r"登记印鉴|注册商标盖章|registered mark|trademark impersonat",
 ]
+_BLOCK_INTENT = [re.compile(p) for p in _BLOCK_INTENT_PATTERNS]
 
-MARKER_RE = re.compile("|".join(re.escape(m) for m in FORBIDDEN_MARKERS), re.IGNORECASE)
+# Artistic-context whitelist — when the text itself frames a blocked-topic
+# word as art / satire / memorial, the expression is allowed. Checked FIRST.
+_ART_CONTEXT_PATTERNS = [re.compile(p) for p in [
+    r"纪念章|纪念|讽刺|艺术|玩笑|装饰|playful|artwork|satire|memorial|commemorative",
+]]
 
-GUIDANCE = {
-    "zh": "机构/公司/政府名称不能出现在印章模式中——这会触碰「可用于签署认证的印章」的法律红线。这类内容更适合做成纪念邮票或明信片样式，那里官方机构名是被允许的（纪念性质）。试试切换到邮票或明信片模式？",
-    "en": "Organization names are not allowed in seal mode — that edges into legally sensitive territory of authentication-grade seals. The same content is welcome in commemorative-stamp or postcard mode, where institutional names are memorial by nature. Try switching to stamp or postcard mode?",
-    "ja": "会社・機関の名前は「印章」モードでは使えません。法的効力を持つ印鑑の領域に触れるためです。同じ内容なら記念切手やはがきスタイルが最適です。そちらでは機関名は記念の性質で使えます。「切手」モードに切り替えてみてください。",
+# ---------------------------------------------------------------------------
+# Template registry — source system, format, and text capacity
+# ---------------------------------------------------------------------------
+TEMPLATES = {
+    "zh-square-zhu":      {"track": "zh", "format": "postcard", "capacity": 8},
+    "zh-square-bai":      {"track": "zh", "format": "postcard", "capacity": 8},
+    "zh-circle-leisure":  {"track": "zh", "format": "postcard", "capacity": 4},
+    "jp-circle-stamp":    {"track": "jp", "format": "postcard", "capacity": 8},
+    "wz-wax-monogram":    {"track": "wz", "format": "postcard", "capacity": 3},
 }
 
+TRACK_DEFAULT_TEMPLATES = {"zh": "zh-square-zhu", "jp": "jp-circle-stamp",
+                           "wz": "wz-wax-monogram"}
 
-def derive_mode(track: str):
-    """Cultural track to output mode: zh/wz -> seal, jp -> stamp."""
-    if track in ("zh", "wz"):
+
+def derive_mode(track_or_mode: str) -> str:
+    """zh/wz -> seal, jp -> stamp; pass through seal|stamp|postcard unchanged."""
+    if track_or_mode in ("zh", "wz"):
         return "seal"
-    if track == "jp":
+    if track_or_mode == "jp":
         return "stamp"
-    raise ValueError(f"unknown track '{track}'; expected zh | jp | wz")
+    if track_or_mode in ("seal", "stamp", "postcard"):
+        return track_or_mode
+    raise ValueError(f"unknown track/mode: {track_or_mode!r}")
 
 
-def validate(text: str, mode: str) -> int:
-    text = text.strip()
-    mode = mode.strip().lower()
-    if mode not in ("seal", "stamp", "postcard"):
-        print(f"[tracemark] unknown mode '{mode}'; choose seal | stamp | postcard", file=sys.stderr)
-        return 1
-    if mode == "seal" and MARKER_RE.search(text):
-        hit = MARKER_RE.search(text).group(0)
-        print(f'[tracemark] REJECTED: "{text}" contains organization marker "{hit}" in seal mode.')
-        print(GUIDANCE["zh"])
-        print(GUIDANCE["en"])
-        print(GUIDANCE["ja"])
-        return 1
-    print(f'[tracemark] PASS: "{text}" in {mode} mode.')
+def resolve_template(config: dict):
+    """Return (template, track, format, capacity, error_message).
+
+    Four concepts stay separate: track / format / template / purpose.
+    Errors: unknown template, template/track mismatch, format/template
+    mismatch — all are hard errors, never silently fixed.
+    """
+    track = config.get("track")
+    if track not in TRACK_DEFAULT_TEMPLATES:
+        return None, None, None, None, (
+            f"invalid track {track!r}; expected zh | jp | wz")
+    fmt = config.get("format") or "postcard"
+    if fmt not in ("seal", "stamp", "postcard"):
+        return None, None, None, None, (
+            f"invalid format {fmt!r}; expected seal | stamp | postcard")
+    tpl = config.get("template") or TRACK_DEFAULT_TEMPLATES[track]
+    if tpl not in TEMPLATES:
+        return None, None, None, None, f"unknown template {tpl!r}"
+    meta = TEMPLATES[tpl]
+    if meta["track"] != track:
+        return None, None, None, None, (
+            f"template {tpl!r} belongs to track {meta['track']!r}, "
+            f"not track {track!r}")
+    if fmt == "seal" and meta["format"] != "postcard":
+        return None, None, None, None, (
+            f"format seal cannot combine with template {tpl!r}")
+    return tpl, track, fmt, meta["capacity"], None
+
+
+def check_capacity(text: str, capacity: int):
+    """No silent truncation. Over-capacity text is a hard error.
+
+    The caller may auto-switch the config to a larger-capacity template
+    (e.g. zh-circle-leisure for 4-char round layout) — but that never
+    rewrites the user's text. If still over capacity, fail explicitly.
+    """
+    n = len(text)
+    if n > capacity:
+        return (f"text length {n} exceeds template capacity {capacity}; "
+                "never silently truncate user text")
+    return None
+
+
+def validate(text: str, mode_or_track: str = "postcard",
+             config: dict = None) -> int:
+    """Run the AUP gate. Returns 0 = pass, 1 = rejected.
+
+    config (optional): full config dict — enables template resolution,
+    capacity checks and the purpose field.
+    """
+    text = text or ""
+
+    if config:
+        tpl, track, fmt, capacity, err = resolve_template(config)
+        if err:
+            print(f"[tracemark] FAIL: config: {err}", file=sys.stderr)
+            return 1
+        cap_err = check_capacity(text, capacity)
+        if cap_err:
+            print(f"[tracemark] FAIL: config: {cap_err}", file=sys.stderr)
+            print("[tracemark] HINT: shorten the seal text, or switch the "
+                  "config to a template with larger capacity (zh-square-* "
+                  "holds 8 chars; wz-wax-monogram holds 3). Do not rewrite "
+                  "the user's text.", file=sys.stderr)
+            return 1
+        if config.get("purpose") in BLOCKED_PURPOSES:
+            _print_rejection(text, config["purpose"])
+            return 1
+
+    # Intent markers can appear anywhere the operator writes: the seal text,
+    # caption, place — a blocked purpose hidden in a caption must still be
+    # caught (exact-replica boundary test writes it there).
+    full = text
+    if config:
+        for val in config.values():
+            if isinstance(val, str):
+                full = "\n".join((full, val))
+    for pat in _ART_CONTEXT_PATTERNS:
+        if pat.search(full):
+            print(f"[tracemark] PASS: {text!r} in {mode_or_track} mode "
+                  "(artistic-context whitelist: memorial / satire / art / "
+                  "playful usage is permitted)")
+            return 0  # whitelisted artistic context beats all blocks
+    for pat in _BLOCK_INTENT:
+        if pat.search(full):
+            _print_rejection(text, "blocked-purpose-marker")
+            return 1
+
+    try:
+        mode = derive_mode(mode_or_track)
+    except ValueError:
+        mode = mode_or_track
+    print(f"[tracemark] PASS: {text!r} in {mode} mode. "
+          "(political themes, public figures, institution names, satire and "
+          "historical subjects are permitted; only certification/replication "
+          "purposes are blocked)")
     return 0
 
 
+def _print_rejection(text: str, reason: str):
+    print(f"[tracemark] REJECTED: {text!r} signals a blocked purpose "
+          f"({reason}): certification, official documents, or exact "
+          "replication of an existing seal.", file=sys.stderr)
+    print("[tracemark] Allowed purposes: art | editorial | satire | travel | "
+          "gift | postcard. Blocked: authentication | official-document | "
+          "exact-replica. The same wording used as art/editorial/satire is "
+          "welcome — TraceMark blocks the *purpose*, not the *topic*.",
+          file=sys.stderr)
+    print("[tracemark] 被拒原因：内容表明了认证/公文/复刻真实印章的用途。"
+          "艺术、讽刺、纪念等表达用途完全开放——TraceMark 拒绝用途而非话题。",
+          file=sys.stderr)
+    print("[tracemark] 許可目的: art | editorial | satire | travel | gift | "
+          "postcard。認証・公文書・実在印章の完全複製だけがブロックされます。"
+          "同じ文言でもアート・風刺・記念用途なら問題ありません。",
+          file=sys.stderr)
+
+
+def main():
+    if len(sys.argv) < 3:
+        print("[tracemark] usage: validate_input.py \"<text>\" "
+              "<track|mode> [--config path]", file=sys.stderr)
+        sys.exit(2)
+    config = None
+    args = sys.argv[3:]
+    if "--config" in args:
+        import yaml  # noqa: E402
+        idx = args.index("--config")
+        if idx + 1 < len(args):
+            config = yaml.safe_load(open(args[idx + 1])) or {}
+    sys.exit(validate(sys.argv[1], sys.argv[2], config))
+
+
 if __name__ == "__main__":
-    if len(sys.argv) == 4 and sys.argv[1] == "--track":
-        try:
-            mode = derive_mode(sys.argv[2])
-        except ValueError as e:
-            print(f"[tracemark] {e}", file=sys.stderr)
-            sys.exit(2)
-        sys.exit(validate(sys.argv[3], mode))
-    if len(sys.argv) == 3:
-        sys.exit(validate(sys.argv[1], sys.argv[2]))
-    print(__doc__)
-    sys.exit(2)
+    main()

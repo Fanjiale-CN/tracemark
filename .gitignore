@@ -1,0 +1,17 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# OS clutter
+.DS_Store
+Thumbs.db
+
+# Local outputs (deliverables live in examples/*/output.jpg on purpose)
+*.tracemark.json
+*.tracemark.json

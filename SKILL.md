@@ -21,21 +21,25 @@ Trace every mark. 痕迹追溯。
 
 模板由 config.yaml 的 `template:` 字段路由（可选，缺省走轨道默认模板）。
 
-**类别可用性**：印章轨道禁公司/机构/政府名（渲染管线自动拒绝并温和引导切邮票样式）；邮票与明信片样式允许机构名。见 AUP.md。
+**用途型可用性**（v1.0）：风控按用途而非关键词——政治表达、公共人物、机构、国家、历史题材与讽刺作品均可出现；被拦的是任何认证用途与复刻现存官方印鉴的意图。政治/机构/讽刺题材被拒时，管线会说明被拦的是哪个用途并给出改法，温和引导而非报错。见 AUP.md。
 
 ## 使用流程
 
 1. 撰写 `config.yaml` 放入用例目录；照片放同目录，`photo: input.jpg`（相对 config 目录解析，永不用 cwd）
 2. `python3 scripts/tracemark.py render --config <用例目录>/config.yaml` → 输出 1200×1600 JPEG (q88)；`--no-photo` 生成纯印章成品（齿孔+TRACE·ART 强制在位）
 3. 单跑风控：`python3 scripts/tracemark.py validate "<文字>" "zh"`（track zh|jp|wz 或 mode seal|stamp|postcard 均可，自动推导）；风控被拒会温和引导而非报错
-4. 成品合规扫描：`python3 scripts/tracemark.py audit <output.jpg>`（齿孔+TRACE·ART+画幅指纹）
-5. 边界用例在 config 中写 `_expect: fail`（缺字）或 `_expect: reject`（风控）供 run_examples.py 断言；新用例按 `input.jpg + prompt.txt + config.yaml + output.jpg` 配对存入（examples 即评测集）
-6. 依赖：`pip install -r requirements.txt`（Pillow>=10 / PyYAML / numpy / freetype-py；缺字检测读字体真实 cmap——豆腐块一律 FAIL，渲染管线全程无法跳过风控）
+4. 成品合规扫描：`python3 scripts/tracemark.py audit <output.jpg>`（非空白+齿孔/边框+TRACE·ART+画幅指纹+sidecar 元数据一致性）；每次 render 完成后管线强制自动审计一次，结果写 `output.tracemark.json`
+5. 环境健康检查：`python3 scripts/tracemark.py doctor`（依赖/字体/写目录）；freetype-py 缺失会硬报错，禁止静默降级
+6. 边界用例在 config 中写 `_expect: fail`（缺字）或 `_expect: reject`（风控）供 run_examples.py 断言；新用例按 `input.jpg + prompt.txt + config.yaml + output.jpg` 配对存入（examples 即回归评测集）
+7. 依赖：`pip install -r requirements.txt`（Pillow>=10 / PyYAML / numpy / freetype-py；缺字检测读字体真实 cmap——豆腐块一律 FAIL，渲染管线全程无法跳过风控）
+
+概念分层：`track`（文化轨道 zh/jp/wz）→ `format`（印章/邮票/明信片，由轨道推导）→ `template`（布局：zh-square-zhu / zh-square-bai / zh-circle-leisure / jp-circle-stamp / wz-wax-monogram，覆盖 format 与风格）→ `purpose`（用途，风控唯一维度）。模板有容量上限（方印 8 字、圆闲章 4 字、monogram 3 字母）：超限硬报错，严禁截断用户原文。
 
 ## 关键约束（违反即返工）
 
 - 成品必须保持艺术化边框/齿孔/微字，任何配置不得绕过（法律防线）
 - 文字渲染失败（豆腐块/缺字）必须报错，不得输出残缺成品
+- 严禁静默截断、重写或忽略用户原文：超限/缺字/模板不匹配一律硬报错并给出改法
 - 钤印肌理（旋转/位移/墨晕）必须启用，不得输出完美几何印面
 - 不生成仿真印鉴：成品与真实印章在尺寸与细节上必须可感知区分
 

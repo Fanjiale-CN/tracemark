@@ -3,17 +3,23 @@
 > 选择语言 / Choose language / 言語を選択 / Choix de langue：
 > **[简体中文](#简体中文)** · **[繁體中文](#繁體中文)** · **[粵語](#粵語)** · **[English](#english)** · **[日本語](#日本語)** · **[Français](#français)**
 
+TraceMark 的风控基于**用途**（purpose），而非关键词：政治表达、公共人物、机构、国家、历史题材与讽刺作品均被允许，禁止的是任何认证用途与对现存官方印鉴的复刻。
+
+Risk control is based on **purpose**, not keywords: political expression, public figures, institutions, nations, historical subjects and satire are all allowed — what is blocked is any authentication use and the replication of existing official seals.
+
 ---
 
 ## English
 
-TraceMark generates **artistic, decorative** seal and postcard imagery. It is not a tool for producing documents with legal effect.
+TraceMark creates **decorative artwork only**. Outputs are not designed or authorized for identity verification, document authentication, official stamping, certification or trademark impersonation.
 
-**Allowed:** personal names, given names, pen names, studio names (斋馆), auspicious phrases, place names, dates, monogram and floral/geometric motifs — and, in *postcard or commemorative-stamp style*, company, organization, government, and country names (e.g., a "Visit Tokyo 2026" postcard).
+**Allowed purposes:** art, editorial, satire, travel, gifts, postcards. Political expression, public figures, institutions, nations and historical subjects may appear in artwork.
 
-**Not allowed:** anything intended to authenticate a document; seals replicating an existing organization's official seal for the purpose of signing or stamping official documents; counterfeit certificates, receipts, or contracts; impersonation of any real person's registered seal.
+**Not allowed:** reproducing an existing official seal or registered mark; using outputs to create documents intended to deceive (certificates, receipts, contracts, official documents); certification or authentication purposes of any kind.
 
-Every output permanently carries an artification frame (perforation border or "TRACE·ART" microtext) and a non-standard artistic layout, making it visually and legally distinguishable from authentic seals. In China, criminal law (Article 280 of the Criminal Law) protects seals *usable for authentication and signing*; decorative imagery without that capability falls outside its scope, and TraceMark's design guarantees that gap.
+> Disclaimer: TraceMark only generates decorative artistic images, and may be used for political expression, public figures, institutions, nations, historical subjects, satire and commemorative postcards. Outputs carry no function of identity verification, document authentication, official stamping, or trademark authorization. Do not use TraceMark to reproduce existing official seals, registered seals or registered marks, or to create documents intended to deceive. Host-platform policies also apply.
+
+Every output permanently carries artification protections: a non-standard perforation or frame, the permanent microtext "TRACE·ART", and non-real proportions — deliberate product-design features; no "exact replica" mode exists.
 
 **Report violations:** open an issue in this repository tagged `[AUP]`.
 
@@ -21,68 +27,78 @@ Every output permanently carries an artification frame (perforation border or "T
 
 ## 简体中文
 
-TraceMark 生成的是**装饰性艺术印章与明信片**图像，不具备任何法律效力。
+TraceMark 仅生成装饰性艺术图像，输出不具备身份验证、文件认证、正式盖章或商标授权功能。
 
-**允许：** 个人姓名、字号、笔名、斋馆名、吉语、地名、日期、字母组合、花草几何纹样。以**纪念邮票或明信片样式**呈现时——公司、机构、政府、国家名称完全可以使用（例如一张"2026 东京之旅"明信片）。
+**允许的用途：** 艺术、编辑、讽刺、旅行、礼品、明信片。政治表达、公共人物、机构、国家、历史题材均可出现在艺术作品中。
 
-**禁止：** 任何用于文件认证目的的内容；复刻现存机构公章用于签署或盖印正式文件；伪造证书、票据、合同；冒用任何真实人物的登记印章。
+**禁止的用途：** 复刻现存官方印章、登记印鉴或注册标志；将输出用于制作具有欺骗目的的证件、票据、合同及其他文件；任何形式的认证用途。
 
-所有成品永久带有艺术化边框（齿孔边框或 "TRACE·ART" 微字）与非标准艺术排版，与真实印鉴在视觉与法律上均保持可感知差异。中国刑法第 280 条保护的是"可用于签署认证的印章"；不具备该能力的装饰性图像不在其范围内——TraceMark 的设计保证这一界限。
+> 免责声明：TraceMark 仅生成装饰性艺术图像，可用于政治表达、公共人物、机构、国家、历史题材、讽刺作品及纪念明信片。输出不具备身份验证、文件认证、正式盖章或商标授权功能。不得使用 TraceMark 复刻现存官方印章、登记印鉴或注册标志，也不得将输出用于制作具有欺骗目的的文件。使用时还需遵守运行平台的内容政策。
 
-**违规报告：** 在本仓库提交 Issue，标注 `[AUP]`。
+所有成品永久带有艺术化保护：非标准齿孔或边框、永久微字 "TRACE·ART"、非真实印章比例——这些是产品设计特征；不提供"完全一致复刻"模式。
+
+**举报违规：** 在本仓库提交标注 `[AUP]` 的 issue。
 
 ---
 
 ## 繁體中文
 
-TraceMark 生成的是**裝飾性藝術印章與明信片**圖像，不具備任何法律效力。
+TraceMark 僅生成裝飾性藝術圖像，輸出不具備身份驗證、文件認證、正式蓋章或商標授權功能。
 
-**允許：** 個人姓名、字號、筆名、齋館名、吉語、地名、日期、字母組合、花草幾何紋樣。以**紀念郵票或明信片樣式**呈現時——公司、機構、政府、國家名稱完全可以使用。
+**允許的用途：** 藝術、編輯、諷刺、旅行、禮品、明信片。政治表達、公共人物、機構、國家、歷史題材均可出現在藝術作品中。
 
-**禁止：** 任何用於文件認證目的的內容；複製現存機構公章以簽署或蓋印正式文件；偽造證書、票據、合約；冒用任何真實人物的登記印章。
+**禁止的用途：** 復刻現存官方印章、登記印鑑或註冊標誌；將輸出用於製作具有欺騙目的的證件、票據、合同及其他文件；任何形式的認證用途。
 
-所有成品永久帶有藝術化邊框（齒孔邊框或 "TRACE·ART" 微字）與非標準藝術排版，與真實印鑑在視覺與法律上均保持可感知差異。中國刑法第 280 條保護的是「可用於簽署認證的印章」——TraceMark 的設計保證裝飾性圖像在界限之外。
+> 免責聲明：TraceMark 僅生成裝飾性藝術圖像，可用於政治表達、公共人物、機構、國家、歷史題材、諷刺作品及紀念明信片。輸出不具備身份驗證、文件認證、正式蓋章或商標授權功能。不得使用 TraceMark 復刻現存官方印章、登記印鑑或註冊標誌，也不得將輸出用於製作具有欺騙目的的文件。使用時還須遵守運行平台的內容政策。
 
-**違規報告：** 於本倉庫提交 Issue，標註 `[AUP]`。
+所有成品永久帶有藝術化保護：非標準齒孔或邊框、永久微字 "TRACE·ART"、非真實印章比例——這些是產品設計特徵；不提供「完全一致復刻」模式。
+
+**舉報違規：** 在本倉庫提交標註 `[AUP]` 的 issue。
 
 ---
 
 ## 粵語
 
-TraceMark 生成嘅係**裝飾性藝術印章同明信片**圖像，冇任何法律效力。
+TraceMark 淨係生成裝飾性藝術圖像，輸出冇身份驗證、文件認證、正式蓋章或者商標授權功能。
 
-**允許：** 個人姓名、字號、筆名、齋館名、吉語、地名、日期、字母組合、花草幾何紋樣。以**紀念郵票或者明信片樣式**呈現嘅時候——公司、機構、政府、國家名稱完全可以用。
+**允許嘅用途：** 藝術、編輯、諷刺、旅行、禮品、明信片。政治表達、公共人物、機構、國家、歷史題材都可以出現喺藝術作品入面。
 
-**禁止：** 任何用於文件認證用途嘅內容；複製現存機構公章嚟簽署或者蓋印正式文件；偽造證書、票據、合約；冒用任何真實人物嘅登記印章。
+**禁止嘅用途：** 復刻現存官方印章、登記印鑑或者註冊標誌；將輸出用喺製作具欺騙目的嘅證件、票據、合同同其他文件；任何形式嘅認證用途。
 
-所有成品永久帶藝術化邊框（齒孔邊框或者 "TRACE·ART" 微字）同非標準藝術排版，同真實印鑑喺視覺同法律上都保持可感知差異。中國刑法第 280 條保護嘅係「可以用於簽署認證嘅印章」——TraceMark 嘅設計保證裝飾性圖像喺界限之外。
+> 免責聲明：TraceMark 淨係生成裝飾性藝術圖像，可以用喺政治表達、公共人物、機構、國家、歷史題材、諷刺作品同紀念明信片。輸出冇身份驗證、文件認證、正式蓋章或者商標授權功能。唔可以用 TraceMark 復刻現存官方印章、登記印鑑或者註冊標誌，亦都唔可以將輸出用喺製作具欺騙目的嘅文件。使用時仲要遵守運行平台嘅內容政策。
 
-**違規報告：** 喺呢個倉庫開 Issue，標註 `[AUP]`。
+所有成品永久帶藝術化保護：非標準齒孔或者邊框、永久微字 "TRACE·ART"、非真實印章比例——呢啲係產品設計特徵；唔提供「完全一致復刻」模式。
+
+**舉報違規：** 喺本倉庫提交標註 `[AUP]` 嘅 issue。
 
 ---
 
 ## 日本語
 
-TraceMark は**装飾的なアートはんこ・飾りはんこ**を生成します。**実印・銀行印・認印などの法的効力を持つ印鑑ではありません。**
+TraceMark は装飾的なアート画像のみを生成します。出力に身分確認、書類認証、公式捺印、商標模倣の機能はありません。
 
-**許可される内容：** 個人名、字（あざな）、ペンネーム、齋館名（アトリエ名）、吉語、地名、日付、モノグラム、植物・幾何学模様。**切手・はがきスタイル**の場合は——会社、機関、政府、国名も自由にお使いいただけます（例：「2026 東京を訪ねて」のはがき）。
+**許可された用途：** アート、エディトリアル、風刺、旅行、ギフト、ポストカード。政治的表現、公的人物、機関、国家、歴史的題材はアート作品に含めることができます。
 
-**禁止事項：** 文書の認証を目的とする使用；既存機関の公式印鑑を複製して公文書への押印・署名に使用すること；証明書・領収書・契約書の偽造；実在人物の実印のなりすまし。
+**禁止された用途：** 現存する公式印章・登記印鑑・登録商標の複製；欺瞞を目的とした証明書、領収書、契約書その他の書類の作成；あらゆる種類の認証用途。
 
-すべての生成物には、穴あき縁または「TRACE・ART」マイクロテキストを含むアート化枠と非標準的なアートレイアウトが永久に入り、本物の印鑑とは視覚的・法律的に明確に区別できます。中国刑法第 280 条が保護するのは「認証・署名に使用できる印章」です——その能力を持たない装飾的画像は対象外であり、TraceMark の設計はこの境界を保証します。
+> 免責事項：TraceMark は装飾的なアート画像のみを生成し、政治的表現、公的人物、機関、国家、歴史的題材、風刺作品、記念ポストカードに使用できます。出力は身分確認、書類認証、公式捺印、商標ライセンスの機能を一切持ちません。現存する公式印章・登記印鑑・登録商標を複製したり、欺瞞を目的とした書類を作成するために使用してはなりません。利用時にはホストプラットフォームのポリシーにも従ってください。
 
-**違反報告：** 本リポジトリで `[AUP]` タグ付きのイシューを作成してください。
+すべての出力には芸術化保護が恒久的に組み込まれます：非標準的な穴あき縁または枠、永久マイクロテキスト「TRACE・ART」、実物の印章とは異なる比率——これらは製品設計上の特徴であり、「完全一致複製」モードは提供しません。
+
+**違反の報告：** このリポジトリに `[AUP]` タグ付き issue を立ててください。
 
 ---
 
 ## Français
 
-TraceMark génère des images de sceaux et de cartes postales **artistiques et décoratives**. Ce n'est pas un outil permettant de produire des documents à effet juridique.
+TraceMark ne crée que des images artistiques décoratives. Les résultats ne sont ni conçus ni autorisés pour la vérification d'identité, l'authentification de documents, le tamponnage officiel ou l'usurpation de marque.
 
-**Autorisé :** noms personnels, prénoms, pseudonymes, noms d'ateliers (斋馆), phrases porte-bonheur, noms de lieux, dates, monogrammes, motifs floraux et géométriques. En *style timbre commémoratif ou carte postale* — les noms d'entreprises, d'institutions, de gouvernements et de pays sont les bienvenus (ex. : une carte postale « Visite à Tokyo 2026 »).
+**Utilisations autorisées :** art, éditorial, satire, voyage, cadeaux, cartes postales. L'expression politique, les personnalités publiques, les institutions, les pays et les sujets historiques peuvent apparaître dans les œuvres.
 
-**Interdit :** tout contenu destiné à authentifier un document ; reproduction du sceau officiel d'une organisation existante aux fins de signature ou de cachetage de documents officiels ; contrefaçon de certificats, de reçus ou de contrats ; usurpation du sceau enregistré d'une personne réelle.
+**Utilisations interdites :** reproduire un sceau officiel, un cachet enregistré ou une marque déposée existants ; utiliser les résultats pour créer des documents destinés à tromper (certificats, reçus, contrats ou autres documents) ; toute finalité d'authentification.
 
-Chaque sortie porte en permanence un cadre d'artification (bordure dentelée ou microtexte "TRACE·ART") et une mise en page artistique non standard, la rendant visuellement et juridiquement distinguable des sceaux authentiques. En Chine, l'article 280 du Code pénal protège les sceaux *utilisables pour l'authentification et la signature* ; les images décoratives dépourvues de cette capacité sont hors de son champ d'application — la conception de TraceMark garantit cette démarcation.
+> Avertissement : TraceMark ne génère que des images artistiques décoratives, utilisables pour l'expression politique, les personnalités publiques, les institutions, les pays, les sujets historiques, les œuvres satiriques et les cartes postales commémoratives. Les résultats n'ont aucune fonction de vérification d'identité, d'authentification de documents, de tamponnage officiel ou d'autorisation de marque. N'utilisez pas TraceMark pour reproduire un sceau officiel, un cachet enregistré ou une marque déposée existants, ni pour créer des documents destinés à tromper. Les politiques de la plateforme d'hébergement s'appliquent également.
 
-**Signaler une violation :** ouvrez un ticket dans ce dépôt avec le tag `[AUP]`.
+Chaque résultat conserve de manière permanente une protection artistique : perforation ou bordure non standard, microtexte permanent « TRACE·ART », proportion différente d'un véritable sceau — caractéristiques de conception produit ; aucun mode de « réplique exacte » n'existe.
+
+**Signaler une violation :** ouvrez une issue dans ce dépôt avec le tag `[AUP]`.

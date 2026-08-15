@@ -11,7 +11,7 @@ Trace every mark.
 | jp (cachet japonais) | katakana / esthétique papeterie japonaise / style eki-stamp | intégré dans render.py (cachet circulaire à encre estompée) |
 | wz (sceau de cire occidental) | monogramme / mariage / cadeau / enveloppe de marque | intégré dans render.py (empreinte ronde à la cire) |
 
-**Disponibilité par catégorie** : le mode sceau refuse les noms d'entreprises, d'institutions et de gouvernements (`validate_input.py` rejette et redirige doucement vers le style timbre) ; les styles carte postale et timbre commémoratif acceptent les noms d'organisations. Voir AUP.md.
+**Disponibilité par finalité** : le contrôle d'accès se fonde sur la *finalité*, pas sur des mots-clés — expression politique, personnalités publiques, institutions, nations, sujets historiques et satire sont autorisés ; seules les finalités d'authentification et la reproduction de sceaux officiels existants sont bloquées. Voir AUP.md.
 
 ## Flux de travail
 

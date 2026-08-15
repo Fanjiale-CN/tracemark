@@ -1,10 +1,13 @@
-# Boundary case: text longer than the safety cap (8).
-# Expected: truncated to the first 8 chars with a WARN, then render succeeds.
+# Boundary case (v1.0): text longer than template capacity.
+# Expected: FAIL — user text is NEVER silently truncated; the operator must
+# shorten the text or switch to a larger-capacity template.
+_expect: fail
 track: zh
+template: zh-square-zhu
 text: 春风吹又生明月几时有把酒问青天
 seed: 11
 photo: null
-caption: 长文本截断测试（超长 caption 同样不应溢出画布）
+caption: 长文本容量测试（超长 caption/地点同样不应溢出画布）
 date: "2026.08.15"
 place: 北京 · BEIJING 这个地点名也被拉得非常长以测试截断
 style:

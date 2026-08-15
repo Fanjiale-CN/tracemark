@@ -1,0 +1,14 @@
+name: tracemark
+description: >-
+  Generate artistic commemorative seal/postcard imagery from a photo and a
+  one-line theme, in three cultural tracks (Chinese zhuan seal 中式篆刻,
+  Japanese craft stamp 日本のはがき印, Western wax seal 西式火漆).
+tools:
+  - kind: bash
+    allow:
+      - description: >-
+          Run the unified entry point for health checks, validation, rendering
+          and post-render audit. Examples:
+          `python3 ${CLAUDE_SKILL_DIR:-.}/scripts/tracemark.py doctor`,
+          `python3 ${CLAUDE_SKILL_DIR:-.}/scripts/tracemark.py render --config <case>/config.yaml`,
+          `python3 ${CLAUDE_SKILL_DIR:-.}/scripts/tracemark.py audit <output.jpg>`.

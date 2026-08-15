@@ -11,7 +11,7 @@ Trace every mark.
 | jp (Japanese craft stamp) | katakana / Japanese stationery aesthetic / eki-stamp style | built into render.py (circular ink-wash stamp) |
 | wz (Western wax seal) | monogram / wedding / gift / branded envelope | built into render.py (wax-seal round impression) |
 
-**Category availability**: the seal track refuses company/institution/government names (`validate_input.py` rejects and gently redirects to the stamp style); postcard and commemorative-stamp styles accept organization names. See AUP.md.
+**Purpose-based availability**: risk control gates on *purpose*, not keywords — political expression, public figures, institutions, nations, historical subjects and satire are all allowed; only authentication purposes and the replication of existing official seals are blocked. See AUP.md.
 
 ## Workflow
 

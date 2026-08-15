@@ -1,0 +1,13 @@
+# Boundary case (v1.0 purpose-based AUP): explicit intent to replicate an
+# existing official seal is rejected regardless of the wording.
+# Expected: REJECTED by the AUP gate.
+_expect: reject
+track: zh
+text: 市人民政府
+seed: 2
+photo: null
+caption: 复刻意图风控测试：复刻真实印章
+date: "2026.08.15"
+place: 测试
+style:
+  vermilion: "#C8392B"

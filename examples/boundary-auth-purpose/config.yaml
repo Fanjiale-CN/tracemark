@@ -1,0 +1,14 @@
+# Boundary case (v1.0 purpose-based AUP): a blocked PURPOSE — certification
+# of official documents — must be rejected even though the text itself is
+# an ordinary institution name that is otherwise allowed.
+# Expected: REJECTED by the AUP gate.
+_expect: reject
+track: zh
+text: 国务院用于认证
+seed: 2
+photo: null
+caption: 用途型风控测试
+date: "2026.08.15"
+place: 测试
+style:
+  vermilion: "#C8392B"

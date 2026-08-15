@@ -41,16 +41,14 @@ sys.path.insert(0, os.path.join(ROOT, "scripts"))
 from texture import SealTexture, StampTexture, WaxTexture  # noqa: E402
 import validate_input  # noqa: E402
 
-try:
-    import freetype  # noqa: E402
-    HAS_FREETYPE = True
-except ImportError:
-    HAS_FREETYPE = False
+import freetype  # noqa: E402 — hard dependency; missing-glyph detection
+# reads the font's real cmap (glyph index 0 = .notdef tofu). Without it the
+# pipeline cannot guarantee text fidelity, so we fail loudly instead of
+# falling back to an unreliable heuristic (v1.0 audit requirement).
 
 CANVAS_W, CANVAS_H = 1200, 1600
 SEAL_CELL = 380
 PAPER = (245, 240, 232, 255)
-MAX_TEXT_LEN = 8  # safety cap: longer text is truncated with a warning
 
 FONT_ZH = os.path.join(ROOT, "fonts", "yishanbeizhuanti.ttf")
 FONT_JP = os.path.join(ROOT, "fonts", "noto-serif-jp.ttf")
@@ -70,14 +68,10 @@ def load_font(path: str, size: int):
 
 
 def glyphs_missing(font_path: str, text: str) -> list:
-    """True missing-glyph detection via the font's cmap (glyph index 0 = .notdef tofu).
-
-    Falls back to a PIL getbbox sanity check when freetype-py is unavailable."""
-    if HAS_FREETYPE:
-        face = freetype.Face(font_path)
-        face.select_charmap(freetype.FT_ENCODING_UNICODE)
-        return [ch for ch in text if face.get_char_index(ord(ch)) == 0]
-    return [ch for ch in text if ImageFont.truetype(font_path, 64).getbbox(ch) is None]
+    """True missing-glyph detection via the font's cmap (glyph index 0 = .notdef tofu)."""
+    face = freetype.Face(font_path)
+    face.select_charmap(freetype.FT_ENCODING_UNICODE)
+    return [ch for ch in text if face.get_char_index(ord(ch)) == 0]
 
 
 def verify_text(text: str, font_path: str, label: str):
@@ -296,25 +290,53 @@ def render_wz(cfg: dict):
         ly = cy + (r - 42) * _math.sin(ang)
         d.ellipse([lx - 9, ly - 5, lx + 9, ly + 5], outline=(255, 235, 200, 190), width=3)
 
-    # monogram: big letter + small衬字
+    # monogram: letters participate in the composition, never ignored.
+    # 1 letter: big centered; 2 letters: big pair side by side; 3 letters:
+    # big initial + remaining as small under-scroll. Each configuration
+    # produces a visually distinct product (M != MA, v1.0 audit test).
     font_big = load_font(FONT_WZ, SEAL_CELL // 2)
+    font_pair = load_font(FONT_WZ, SEAL_CELL // 3)
     font_small = load_font(FONT_WZ, SEAL_CELL // 6)
-    big = text[0] if text else "M"
-    verify_text(big, FONT_WZ, "wz-monogram")
-    bbox = font_big.getbbox(big)
-    glyph = Image.new("RGBA", ((bbox[2] - bbox[0]) + 30, (bbox[3] - bbox[1]) + 30), (0, 0, 0, 0))
-    gd = ImageDraw.Draw(glyph)
-    gd.text((15 - bbox[0], 15 - bbox[1]), big, font=font_big, fill=(255, 240, 215, 255))
-    art.alpha_composite(glyph, ((SEAL_CELL - glyph.width) // 2, (SEAL_CELL - glyph.height) // 2))
-    if len(text) >= 3:
-        small = text[1:]
-        verify_text(small, FONT_WZ, "wz-monogram")
+    n = len(text)
+    verify_text(text, FONT_WZ, "wz-monogram")
+    if n == 0:
+        fail("wz-monogram text is empty; provide 1-3 letters")
+    fill = (255, 240, 215, 255)
+    small_fill = (255, 240, 215, 230)
+    if n == 1:
+        bbox = font_big.getbbox(text)
+        glyph = Image.new("RGBA", ((bbox[2] - bbox[0]) + 30, (bbox[3] - bbox[1]) + 30), (0, 0, 0, 0))
+        gd = ImageDraw.Draw(glyph)
+        gd.text((15 - bbox[0], 15 - bbox[1]), text, font=font_big, fill=fill)
+        art.alpha_composite(glyph, ((SEAL_CELL - glyph.width) // 2,
+                                    (SEAL_CELL - glyph.height) // 2))
+    elif n == 2:
+        b0 = font_pair.getbbox(text[0])
+        b1 = font_pair.getbbox(text[1])
+        total = (b0[2] - b0[0]) + 24 + (b1[2] - b1[0])
+        gh = max(b0[3] - b0[1], b1[3] - b1[1]) + 30
+        glyph = Image.new("RGBA", (total + 20, gh), (0, 0, 0, 0))
+        gd = ImageDraw.Draw(glyph)
+        gd.text((12 - b0[0], 15 - b0[1]), text[0], font=font_pair, fill=fill)
+        gd.text((12 + (b0[2] - b0[0]) + 24 - b1[0], 15 - b1[1]), text[1],
+                font=font_pair, fill=fill)
+        art.alpha_composite(glyph, ((SEAL_CELL - glyph.width) // 2,
+                                    (SEAL_CELL - glyph.height) // 2))
+    else:
+        big, small = text[0], text[1:]
+        bbox = font_big.getbbox(big)
+        glyph = Image.new("RGBA", ((bbox[2] - bbox[0]) + 30, (bbox[3] - bbox[1]) + 30), (0, 0, 0, 0))
+        gd = ImageDraw.Draw(glyph)
+        gd.text((15 - bbox[0], 15 - bbox[1]), big, font=font_big, fill=fill)
+        art.alpha_composite(glyph, ((SEAL_CELL - glyph.width) // 2,
+                                    (SEAL_CELL - glyph.height) // 2))
         bbox = font_small.getbbox(small)
         w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
         sg = Image.new("RGBA", (w + 10, h + 10), (0, 0, 0, 0))
         sd = ImageDraw.Draw(sg)
-        sd.text((5 - bbox[0], 5 - bbox[1]), small, font=font_small, fill=(255, 240, 215, 230))
-        art.alpha_composite(sg, ((SEAL_CELL - sg.width) // 2, SEAL_CELL - sg.height - 30))
+        sd.text((5 - bbox[0], 5 - bbox[1]), small, font=font_small, fill=small_fill)
+        art.alpha_composite(sg, ((SEAL_CELL - sg.width) // 2,
+                                 SEAL_CELL - sg.height - 30))
 
     tex = WaxTexture(seed=seed)
     return tex.apply(art)
@@ -493,6 +515,38 @@ def output_result(img: "Image.Image", out_path: str):
     print(f"[tracemark] saved {out_path} ({img.width}x{img.height})")
 
 
+def write_sidecar(out_path: str, config_path: str, cfg: dict, no_photo: bool):
+    """Write a render-time audit sidecar next to the output.
+
+    The `audit` command verifies output integrity against this metadata:
+    size, source config identity, text/template/seed fingerprint and per-
+    layer SHA-256 digests. A pixel stream alone is never trusted (v1.0)."""
+    import hashlib as _hashlib
+    sidecar = os.path.splitext(out_path)[0] + ".tracemark.json"
+    try:
+        with open(out_path, "rb") as f:
+            file_hash = _hashlib.sha256(f.read()).hexdigest()
+    except OSError:
+        file_hash = None
+    meta = {
+        "generator": "tracemark",
+        "config": os.path.abspath(config_path),
+        "track": cfg.get("track"),
+        "template": cfg.get("template") or validate_input.TRACK_DEFAULT_TEMPLATES.get(cfg.get("track")),
+        "text": cfg.get("text"),
+        "seed": cfg.get("seed", 7),
+        "no_photo": no_photo,
+        "output_size": list(cfg.get("__size__", (CANVAS_W, CANVAS_H))),
+        "output_sha256": file_hash,
+    }
+    with open(sidecar, "w") as f:
+        json.dump(meta, f, indent=2, ensure_ascii=False)
+    print(f"[tracemark] sidecar {sidecar}")
+
+
+import json  # noqa: E402
+
+
 def render_entry(config_path: str, out_path: str, no_photo: bool):
     """Unified render entry point: every step below runs; none is optional."""
     config_path = os.path.abspath(config_path)
@@ -505,14 +559,14 @@ def render_entry(config_path: str, out_path: str, no_photo: bool):
     check_config_structure(cfg, config_path)
 
     text = cfg["text"]
-    if len(text) > MAX_TEXT_LEN:
-        print(f"[tracemark] WARN: text '{text}' exceeds {MAX_TEXT_LEN} chars; "
-              f"truncated to '{text[:MAX_TEXT_LEN]}'", file=sys.stderr)
-        text = text[:MAX_TEXT_LEN]
-        cfg["text"] = text
 
-    track = cfg["track"]
-    run_aup_check(text, track, config_path)
+    # AUP gate via the unified validator (purpose-based). resolve_template
+    # enforces: unknown template / template-track mismatch / format-template
+    # mismatch are hard errors; check_capacity forbids silent truncation.
+    code = validate_input.validate(text, cfg["track"], cfg)
+    if code != 0:
+        fail(f"AUP gate rejected the render for {config_path}; see guidance "
+             "above")
 
     renderer_key, seal_mode = resolve_track_and_mode(cfg)
     cfg.setdefault("style", {})
@@ -522,7 +576,13 @@ def render_entry(config_path: str, out_path: str, no_photo: bool):
 
     plate = TRACKS[renderer_key](cfg)
     out_img = render_seal_only(plate) if no_photo else render_postcard(cfg, plate)
-    output_result(out_img, out_path or os.path.splitext(config_path)[0] + ".jpg")
+    out_path = out_path or os.path.splitext(config_path)[0] + ".jpg"
+    output_result(out_img, out_path)
+
+    # Render-time audit sidecar: the `audit` command verifies the output
+    # against this metadata + layer digests (never trusts the pixel stream
+    # alone — v1.0 real-audit requirement).
+    write_sidecar(out_path, config_path, cfg, no_photo)
 
 
 def main():
